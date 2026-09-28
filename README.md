@@ -24,19 +24,13 @@ This tool assesses customer-managed appliances. It does not connect to appliance
 
 All screenshots use synthetic example data.
 
-<details>
-<summary>Turkish desktop interface</summary>
+### Turkish desktop interface
 
 ![Turkish desktop interface with sample configuration and assessment results](docs/images/desktop-tr.png)
 
-</details>
-
-<details>
-<summary>Mobile interface</summary>
+### Mobile interface
 
 <img src="docs/images/mobile-en.png" alt="English mobile interface with language selection and appliance inputs" width="320">
-
-</details>
 
 ## Quick start
 
