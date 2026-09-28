@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Citrix NetScaler CTX697096 için tarayıcınızda çalışan sürüm ve yapılandırma kontrolü.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>NetScaler Check — Güvenlik Bülteni Kontrolü</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="checker.js" defer></script>
+  <script src="i18n.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#checker">Kontrole geç</a>
+  <header class="topbar">
+    <a class="brand" href="./"><span class="brand-mark" aria-hidden="true">N<span>↗</span></span>NetScaler<span class="brand-light">Check</span></a>
+    <nav aria-label="Ana menü"><a href="#how">Nasıl çalışır?</a><a href="https://support.citrix.com/external/article/CTX697096" target="_blank" rel="noopener noreferrer">Resmî bülten ↗</a><a class="nav-code" href="https://github.com/emrecantuzer" target="_blank" rel="noopener noreferrer">GitHub ↗</a><div class="language-switch" role="group" aria-label="Dil seçimi"><button type="button" data-language="tr" aria-pressed="true" lang="tr" aria-label="Türkçe">TR</button><button type="button" data-language="en" aria-pressed="false" lang="en" aria-label="English">EN</button></div></nav>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="eyebrow"><span class="live-dot"></span> CTX697096 <span class="eyebrow-divider">/</span> 27 EYLÜL 2026 BÜLTENİ</div>
+      <div class="hero-grid"><div><h1>Yapılandırmanızı kontrol edin.<br><span>Sonraki adımı netleştirin.</span></h1><p class="intro">NetScaler ADC ve Gateway için 8 CVE’yi sürüm ve yapılandırma ön koşullarıyla değerlendirin. Verileriniz yalnızca tarayıcınızda işlenir.</p></div><div class="hero-index" aria-hidden="true"><span>01—08</span><small>CVE KONTROLÜ</small><div class="index-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
+      <div class="hero-meta"><span>◉ Yerel analiz</span><span>↗ JSON raporu</span><span>⌘ Komut satırı desteği</span><span class="rules-date">Kural doğrulaması: 28.09.2026</span></div>
+    </section>
+    <aside class="bulletin-alert"><span class="alert-icon" aria-hidden="true">!</span><div><strong>İlk iki CVE için aktif istismar bildirildi.</strong><p>Citrix, etkilenen cihazların güncellenmesini öneriyor. Bu kontrol ön koşulları değerlendirir; cihazın ihlal edilip edilmediğini belirlemez.</p></div><a href="https://support.citrix.com/external/article/CTX697096" target="_blank" rel="noopener noreferrer">Bülteni incele ↗</a></aside>
+    <section id="checker" class="workspace" aria-label="Kontrol alanı">
+      <div class="input-panel panel">
+        <div class="panel-heading"><span class="step">01</span><h2>Cihaz bilgileri</h2><span class="private-tag">YEREL</span></div>
+        <form id="check-form" autocomplete="off">
+          <div class="field"><label for="version">NetScaler sürümü <span>Gerekli</span></label><input id="version" name="version" required placeholder="Örn. 14.1-60.21" spellcheck="false"><p class="hint">Build numarası veya <code>show ns version</code> çıktısı.</p></div>
+          <div class="field"><label for="edition">Sürüm ailesi</label><select id="edition" name="edition"><option value="standard">Standard · ADC / Gateway</option><option value="fips">FIPS</option><option value="ndcpp">NDcPP</option></select><p class="hint">Cihazın ürün ailesini doğrulayın; güncelleme eşikleri farklıdır.</p></div>
+          <div class="field"><div class="label-row"><label for="config">Yapılandırma</label><label class="file-button" for="config-file">Dosya seç ↗</label><input class="file-input" type="file" id="config-file" accept=".conf,.txt,text/plain"></div><textarea id="config" name="config" rows="8" spellcheck="false" placeholder="ns.conf veya show ns runningConfig çıktısını buraya yapıştırın…"></textarea><p id="file-info" class="hint">UTF-8 metin · En fazla 10 MiB · Sunucuya gönderilmez</p></div>
+          <label class="checkbox"><input type="checkbox" id="complete"><span>Bu, cihazın <strong>tam ve güncel</strong> yapılandırmasıdır.</span></label>
+          <details class="tcp-details"><summary>TCP / Enhanced ISN çıktısı <span>İsteğe bağlı</span></summary><label for="tcp">CVE-2026-88778 kontrolünü tamamlamak için <code>show ns tcpparam</code> çıktısı</label><textarea id="tcp" rows="3" spellcheck="false" placeholder="Enhanced ISN Generation: DISABLED"></textarea></details>
+          <p id="form-error" class="error" role="alert" hidden></p>
+          <button class="primary" type="submit">Kontrolü çalıştır <span aria-hidden="true">→</span></button>
+          <div class="secondary-actions"><button id="demo" type="button">Örnek veriyle dene</button><button id="clear" type="button">Temizle</button></div>
+          <p class="privacy-note">Veriler depolanmaz. Raporlar ham yapılandırmayı, IP adreslerini ve nesne adlarını içermez.</p>
+        </form>
+      </div>
+      <div class="results-panel panel" id="results-panel">
+        <div class="panel-heading"><span class="step">02</span><h2>Kontrol sonuçları</h2><button id="download" class="download" type="button" disabled>JSON indir ↓</button></div>
+        <div id="empty-state" class="empty-state"><div class="scan-icon" aria-hidden="true"><span></span><i></i></div><div class="eyebrow">ANALİZE HAZIR</div><h3>Önce cihaz bilgilerinizi ekleyin.</h3><p>Sürüm eşikleri, yapılandırma bulguları ve önerilen aksiyonlar burada görünecek.</p><div class="empty-checks"><span>01 &nbsp; Sürüm karşılaştırması</span><span>02 &nbsp; CVE ön koşulları</span><span>03 &nbsp; Aksiyon raporu</span></div><small>Bir cihaz / bir yapılandırma üzerinden değerlendirilir.</small></div>
+        <div id="report" hidden><div id="summary" class="summary" role="status" aria-live="polite"></div><div class="metrics" id="metrics"></div><div class="result-toolbar"><span>8 CVE / BÜLTEN KAPSAMI</span><label for="filter" class="sr-only">Sonuçları filtrele</label><select id="filter"><option value="all">Tüm sonuçlar</option><option value="affected">Aksiyon gerekli</option><option value="review">İnceleme gerekli</option><option value="resolved">Eşik / ön koşul tamam</option></select></div><div id="result-list"></div><div id="warnings" class="warnings"></div><p class="result-footnote">Sonuçlar, girilen veriler ve bülten kapsamıyla sınırlıdır. Sürüm eşiğinin karşılanması, geçmiş bir ihlali dışlamaz.</p></div>
+      </div>
+    </section>
+    <section class="lower-grid" id="how"><article class="guide"><div class="eyebrow">YÖNTEM</div><h2>Üç adımda kontrol</h2><ol><li><strong>Salt okunur çıktıları alın.</strong><p>NetScaler CLI üzerinde <code>show ns version</code>, <code>show ns runningConfig</code> ve <code>show ns tcpparam</code> komutlarını çalıştırın.</p></li><li><strong>Sürümü ve yapılandırmayı ekleyin.</strong><p>FIPS / NDcPP ailesini seçin. Eksik veriyle yapılan kontrollerde belirsiz sonuçları ayrıca doğrulayın.</p></li><li><strong>Bulgulara göre aksiyon alın.</strong><p>Uygun sürüme geçin ve Enhanced ISN ayarını doğrulayın. HA çiftindeki her düğümü ayrı kontrol edin.</p></li></ol></article><article class="thresholds"><div class="eyebrow">BÜLTENDEKİ DÜZELTME EŞİKLERİ</div><h2>Sürüm referansı</h2><table><caption class="sr-only">Ürün ailelerine göre minimum düzeltme sürümü</caption><thead><tr><th>Ürün ailesi</th><th>Minimum build</th></tr></thead><tbody><tr><td>14.1 · Standard</td><td><code>14.1-73.37</code></td></tr><tr><td>13.1 · Standard</td><td><code>13.1-64.23</code></td></tr><tr><td>14.1 · FIPS</td><td><code>14.1-73.37</code></td></tr><tr><td>13.1 · FIPS / NDcPP</td><td><code>13.1-37.279</code></td></tr></tbody></table><p>Aynı dal ve ürün ailesindeki daha yeni build’ler dahildir. TCP ISN kontrolü ayrıca değerlendirilir.</p><a href="https://docs.netscaler.com/en-us/citrix-adc/current-release/system/tcp-configurations.html#enhanced-isn-generation" target="_blank" rel="noopener noreferrer">Enhanced ISN dokümantasyonu ↗</a></article></section>
+  </main>
+  <footer><span><strong>NetScaler Check</strong> · Bağımsız topluluk aracı</span><span>Citrix / NetScaler ile resmî bağlantısı yoktur.</span><a href="https://github.com/emrecantuzer">@emrecantuzer ↗</a></footer>
+  <noscript>Kontrolü çalıştırmak için JavaScript’i etkinleştirin veya Node.js komut satırı aracını kullanın.</noscript>
+</body>
+</html>

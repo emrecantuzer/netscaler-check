@@ -1,0 +1,12 @@
+{
+  "name": "netscaler-bulletin-check",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Offline NetScaler CTX697096 configuration and version assessment",
+  "scripts": {
+    "test": "node --test",
+    "check": "node scripts/check.cjs",
+    "serve": "node scripts/serve.cjs"
+  },
+  "engines": { "node": ">=22" }
+}

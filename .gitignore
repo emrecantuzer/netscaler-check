@@ -1,0 +1,7 @@
+node_modules/
+reports/
+private/
+*.local.conf
+*.local.txt
+artifacts/
+_site/
