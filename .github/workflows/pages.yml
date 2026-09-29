@@ -20,6 +20,10 @@ jobs:
         with:
           node-version: '22'
       - run: node --test
+      - name: Validate live triage collector
+        run: |
+          /bin/sh -n scripts/netscaler_kernel_triage.sh
+          /bin/sh scripts/netscaler_kernel_triage.sh --self-test
       - run: node scripts/build-site.cjs
       - uses: actions/upload-pages-artifact@v4
         with:

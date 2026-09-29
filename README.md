@@ -6,6 +6,8 @@ A bilingual **English / Turkish** web interface and a dependency-free Node.js CL
 
 **[Open in English](https://emrecantuzer.github.io/netscaler-check/?lang=en)** · **[Türkçe aç](https://emrecantuzer.github.io/netscaler-check/?lang=tr)** · **[Official bulletin](https://support.citrix.com/external/article/CTX697096)**
 
+Also included: **[NetScaler kernel-focused live triage collector](scripts/netscaler_kernel_triage.sh)** for collecting on-appliance investigation evidence. See [Live triage collector](#live-triage-collector) for usage and limitations.
+
 ![English desktop interface showing a sample NetScaler assessment and recommended actions](docs/images/desktop-en.png)
 
 ## Features
@@ -103,6 +105,86 @@ The edition is not detected automatically. Use `--complete` only with a complete
 | `3` | Input or execution error. |
 
 Exit code `0` is not a general security or compromise-free guarantee.
+
+## Live triage collector
+
+[`scripts/netscaler_kernel_triage.sh`](scripts/netscaler_kernel_triage.sh) is a separate, kernel-focused live evidence collector targeting **FreeBSD-based NetScaler MPX/VPX 13.1/14.1**. It uses a `/bin/sh` launcher and an embedded Perl program. A compatible Perl interpreter is required; missing tools or optional modules are recorded as coverage gaps.
+
+Unlike the browser assessment, this script runs locally on the appliance as root. It collects live system observations rather than a memory image, and **cannot conclusively rule out a kernel rootkit from inside the running system**. It produces no automatic clean/compromised verdict. It has not yet been validated on a real NetScaler appliance.
+
+| Area | Collected evidence |
+| --- | --- |
+| Kernel | Loaded modules, boot settings, security parameters, kernel messages and on-disk hashes. |
+| Processes | PIDs, parents, executable paths and differences between process/socket snapshots. |
+| Deep mode | Kernel thread stacks, process maps, RWX mappings, open files and credentials. |
+| Network | Connections, listening sockets, interfaces and FreeBSD/NetScaler routes. |
+| Persistence | Cron, startup files, SSH authorized keys and account metadata. |
+| Files | Web directories, temporary executables, permissions, timestamps and SHA-256 hashes. |
+| Logs | Selected plain/gzip logs: authentication/Pitboss context, kernel/crash events and privileged configuration changes. |
+
+Log rules are contextual hunting heuristics, not official or exhaustive exploit signatures. An ordinary Pitboss crash record alone is classified as context, not an attack. Process-view differences can be sampling races, and RWX mappings can be legitimate vendor/JIT behavior. FreeBSD socket views do not cover all proprietary PPE dataplane state.
+
+### Run on an appliance
+
+Download the script from this repository and transfer it to `/var/tmp/netscaler_kernel_triage.sh` on the appliance. Prefer the secondary node first during low load, and assess **each HA member separately**. In the NetScaler CLI, enter:
+
+```text
+shell
+```
+
+Then use a root shell for standard collection:
+
+```sh
+/bin/sh /var/tmp/netscaler_kernel_triage.sh
+```
+
+For deeper collection during low load:
+
+```sh
+/bin/sh /var/tmp/netscaler_kernel_triage.sh --deep --days 30
+```
+
+`--days 30` controls the filesystem mtime/ctime review window; it **does not restrict logs to the last 30 days**. Selected retained logs are scanned subject to explicit limits: plain logs from their tail and gzip logs from their decoded beginning.
+
+| Option | Meaning |
+| --- | --- |
+| `--deep` | Add process maps, descriptors, credentials and kernel stacks; increase collection budgets. |
+| `--days N` | Filesystem review window, 1–3650 days; default 14. |
+| `--max-seconds N` | Collection budget, 60–7200 seconds; default 900, or 1800 with `--deep`. |
+| `--out DIR` | Existing local output parent; default `/var/tmp`. |
+| `--baseline FILE` | Explicitly trusted `hashes.tsv` from an independent clean reference with the same build and platform. An HA peer is not automatically trusted. |
+| `--self-test` | Run synthetic parser/runner tests without inspecting an appliance. |
+| `--help` | Show usage without collecting evidence. |
+
+### Review the output
+
+Reports are written to a private `/var/tmp/ns_triage_.../` directory by default. Start with:
+
+| Report | Purpose |
+| --- | --- |
+| `SUMMARY.txt` | Collection state, finding counts and investigation limits. |
+| `findings.tsv` | Findings requiring context and manual review. |
+| `command_status.tsv`, `coverage.tsv` | Missing/failed commands, unsupported checks and collection limits. |
+| `log_matches.tsv`, `log_coverage.tsv` | Matched excerpts and actual log coverage. |
+| `hashes.tsv`, `baseline_compare.tsv` | Observed file hashes and optional trusted-reference comparison. |
+| `process_crosscheck.tsv` | Differences between process and socket snapshots. |
+| `file_inventory.tsv`, `persistence.txt`, `raw/` | File metadata, persistence observations and raw command output. |
+| `evidence_sha256.tsv` | Report-file hashes when SHA-256 support is available. |
+
+The collector does not change configuration, reboot, fail over, load/unload modules, capture packets or create memory/core dumps. It writes reports, and reads/commands can affect access times, caches and audit logs. Collection consumes CPU and I/O. The free-space preflight requires at least **384 MiB in standard mode** or **512 MiB in deep mode**.
+
+There is no automatic upload, archive or redaction. Command lines, cron entries and matched logs can contain secrets. Preserve the entire report directory securely and review it before sharing. Hashes produced on a suspected appliance do not establish evidence authenticity; correlate findings with off-box logs and an independent trusted reference. Generated `ns_triage_*` directories are excluded from Git.
+
+### Collector validation
+
+On a suitable Unix test host with Perl, run:
+
+```sh
+/bin/sh -n scripts/netscaler_kernel_triage.sh
+/bin/sh scripts/netscaler_kernel_triage.sh --self-test
+```
+
+The script includes 20 synthetic tests covering parsers, subprocess time/output limits, hashes, symlink handling, log scanning and baseline comparison. Linux CI runs these alongside the existing checker tests. Synthetic tests do not validate NetScaler command compatibility or production performance.
 
 ## Assessment rules
 

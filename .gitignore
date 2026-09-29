@@ -5,3 +5,4 @@ private/
 *.local.txt
 artifacts/
 _site/
+ns_triage_*/

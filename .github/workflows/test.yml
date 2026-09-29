@@ -16,3 +16,8 @@ jobs:
         with:
           node-version: '22'
       - run: node --test
+      - name: Validate live triage collector
+        if: runner.os == 'Linux'
+        run: |
+          /bin/sh -n scripts/netscaler_kernel_triage.sh
+          /bin/sh scripts/netscaler_kernel_triage.sh --self-test
